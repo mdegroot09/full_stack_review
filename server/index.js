@@ -25,3 +25,4 @@ massive(CONNECTION_STRING).then(db => {
 })
 
 app.get('/api/users', ctrl.getUsers)
+app.post('/auth/register', ctrl.register)
