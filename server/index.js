@@ -1,6 +1,6 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
-require('dotenv').config()
 const massive = require('massive')
 const session = require('express-session')
 const {SERVER_PORT, SESSION_SECRET, CONNECTION_STRING} = process.env
@@ -26,3 +26,6 @@ massive(CONNECTION_STRING).then(db => {
 
 app.get('/api/users', ctrl.getUsers)
 app.post('/auth/register', ctrl.register)
+app.post('/auth/login', ctrl.login)
+app.get('/auth/details', ctrl.getDetails)
+app.get('/auth/logout', ctrl.logout)

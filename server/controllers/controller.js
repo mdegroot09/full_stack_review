@@ -39,6 +39,38 @@ module.exports = {
   login: async (req, res) => {
     const db = req.app.get('db')
     const session = req.session
-    
+    const {loginUsername : username} = req.body
+    try {
+      let user = await db.login({username})
+      session.user = user[0]
+      const authenticated = bcrypt.compareSync(req.body.loginPassword, user[0].password)
+      if (authenticated){
+        res.status(200).send({authenticated, user_id: user[0].login_id})
+      } else {
+        throw new Error(401)
+      }
+    } catch(err) {
+      res.sendStatus(401)
+    }
+  },
+
+  getDetails: async (req, res) => {
+    const db = req.app.get('db')
+    const {session} = req
+    console.log('session:', session)
+    try {
+      const {login_id : id} = session.user
+      console.log('id:', id)
+      const data = await db.getUserDetails({id})
+      res.status(200).send(data[0])
+      console.log('data:', data)
+    } catch (err) {
+      res.sendStatus(500)
+    }
+  },
+
+  logout: (req, res) => {
+    req.session.destroy()
+    res.sendStatus(200)
   }
 }
